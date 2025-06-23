@@ -45,47 +45,57 @@
 //! - Communicates with the app layer through the `Channels<MalachiteContext>` type
 //! - Integrates with reth's P2P network for consensus message propagation
 
-use crate::context::MalachiteContext;
-use crate::types::Address;
+pub mod config;
+pub mod handler;
+pub mod node;
+
+use crate::app::State;
 use eyre::Result;
+use malachitebft_app::node::Node;
+use std::net::SocketAddr;
+use std::path::PathBuf;
 use tracing::info;
 
-/// Configuration for the malachite consensus engine
-pub struct ConsensusConfig {
-    pub chain_id: String,
-    pub metrics_enabled: bool,
-    pub trace_file: Option<String>,
-}
+pub use config::{EngineConfig, NetworkConfig, NodeConfig, WalConfig};
+pub use node::{ConsensusHandle, MalachiteNodeImpl};
 
-impl Default for ConsensusConfig {
-    fn default() -> Self {
-        Self {
-            chain_id: "malachite-reth".to_string(),
-            metrics_enabled: false,
-            trace_file: None,
-        }
-    }
-}
-
-/// Placeholder for starting the consensus engine
-/// TODO: Implement proper malachite engine initialization
+/// Starts the Malachite consensus engine
+///
+/// This function initializes and starts the consensus engine that will:
+/// - Coordinate with other validators to agree on blocks
+/// - Request block proposals from the application when needed
+/// - Notify the application when consensus is reached
+///
+/// # Arguments
+/// * `app_state` - The application state that will handle consensus requests
+/// * `config` - Engine configuration including network, WAL, and node settings
+/// * `home_dir` - Directory for storing consensus data
+///
+/// # Returns
+/// A handle to the running consensus engine
 pub async fn start_consensus_engine(
-    _ctx: MalachiteContext,
-    address: Address,
-    _config: ConsensusConfig,
-    _initial_validator_set: crate::context::BasePeerSet,
-) -> Result<()> {
+    app_state: State,
+    config: EngineConfig,
+    home_dir: PathBuf,
+) -> Result<ConsensusHandle> {
     info!(
-        "Starting malachite consensus engine for address: {}",
-        address
+        "Starting Malachite consensus engine for chain {}",
+        config.network.chain_id
     );
 
-    // TODO: Implement the actual consensus engine startup
-    // This will involve:
-    // 1. Creating the malachite configuration
-    // 2. Setting up the network, WAL, and metrics configurations
-    // 3. Creating a Node implementation that integrates with reth
-    // 4. Starting the engine with malachitebft_app_channel::start_engine
+    // Create the node implementation
+    let node = MalachiteNodeImpl::new(config, home_dir, app_state);
 
-    Ok(())
+    // Start the consensus engine
+    let handle = node.start().await?;
+
+    info!("Malachite consensus engine started successfully");
+
+    Ok(handle)
+}
+
+/// Creates a default engine configuration
+pub fn default_engine_config(chain_id: String, moniker: String) -> EngineConfig {
+    let listen_addr: SocketAddr = "127.0.0.1:26656".parse().unwrap();
+    EngineConfig::new(chain_id, moniker, listen_addr)
 }

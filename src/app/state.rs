@@ -61,7 +61,7 @@ impl State {
             current_role: Role::None,
             peers: HashSet::new(),
             store: Store::new(),
-            signing_provider: Ed25519Provider::new(),
+            signing_provider: Ed25519Provider::new_test(),
             streams_map: PartStreamsMap::new(),
             rng: StdRng::seed_from_u64(seed_from_address(&address, std::process::id() as u64)),
             engine_handle: PayloadBuilderHandle::new(tx),
@@ -247,6 +247,8 @@ pub enum Role {
     /// The node is not participating in the consensus protocol for the current round.
     None,
 }
+
+// Role conversion implementation removed as Role type is not exported from malachitebft_app_channel
 
 // Use reth store implementation
 #[derive(Debug, Clone)]

@@ -1,6 +1,7 @@
 use crate::height::Height;
-use crate::provider::Ed25519Provider;
+use crate::provider::{Ed25519Provider, PublicKey};
 use crate::types::Address;
+use bytes::Bytes;
 use hex;
 use malachitebft_core_types::{
     Address as MalachiteAddress, Context, Extension as MalachiteExtension, NilOrVal,
@@ -12,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Display;
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct RoundWrapper(Round);
 
 impl From<Round> for RoundWrapper {
@@ -27,7 +28,7 @@ impl From<RoundWrapper> for Round {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct VoteTypeWrapper(VoteType);
 
 impl From<VoteType> for VoteTypeWrapper {
@@ -58,7 +59,7 @@ impl Display for BasePeerAddress {
 
 impl MalachiteAddress for BasePeerAddress {}
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct BaseProposalPart {
     pub height: Height,
     pub round: RoundWrapper,
@@ -76,7 +77,7 @@ impl MalachiteProposalPart<MalachiteContext> for BaseProposalPart {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct BaseProposal {
     pub height: Height,
     pub round: RoundWrapper,
@@ -112,10 +113,10 @@ impl MalachiteProposal<MalachiteContext> for BaseProposal {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BasePeer {
     pub address: BasePeerAddress,
-    pub public_key: Vec<u8>,
+    pub public_key: PublicKey,
     pub voting_power: u64,
 }
 
@@ -124,7 +125,7 @@ impl MalachiteValidator<MalachiteContext> for BasePeer {
         &self.address
     }
 
-    fn public_key(&self) -> &Vec<u8> {
+    fn public_key(&self) -> &PublicKey {
         &self.public_key
     }
 
@@ -133,7 +134,7 @@ impl MalachiteValidator<MalachiteContext> for BasePeer {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BasePeerSet {
     pub peers: Vec<BasePeer>,
     pub total_voting_power: u64,
@@ -157,7 +158,7 @@ impl MalachiteValidatorSet<MalachiteContext> for BasePeerSet {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct BaseValue {
     pub data: Vec<u8>,
 }
@@ -185,7 +186,7 @@ impl std::fmt::Display for ValueIdWrapper {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct BaseVote {
     pub vote_type: VoteTypeWrapper,
     pub height: Height,
@@ -234,7 +235,7 @@ impl MalachiteVote<MalachiteContext> for BaseVote {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct BaseExtension {
     pub data: Vec<u8>,
 }
@@ -322,4 +323,36 @@ impl Context for MalachiteContext {
     }
 }
 
-// Implement Default for MalachiteContext
+// Codec implementation for serialization
+#[derive(Copy, Clone, Debug)]
+pub struct ProtoCodec;
+
+// For now, we'll use a placeholder implementation
+// In production, this would implement proper protobuf encoding/decoding
+impl malachitebft_codec::Codec<BaseValue> for ProtoCodec {
+    type Error = std::io::Error;
+
+    fn decode(&self, bytes: Bytes) -> Result<BaseValue, Self::Error> {
+        Ok(BaseValue { data: bytes.to_vec() })
+    }
+
+    fn encode(&self, msg: &BaseValue) -> Result<Bytes, Self::Error> {
+        Ok(Bytes::from(msg.data.clone()))
+    }
+}
+
+impl malachitebft_codec::Codec<BaseProposalPart> for ProtoCodec {
+    type Error = std::io::Error;
+
+    fn decode(&self, _bytes: Bytes) -> Result<BaseProposalPart, Self::Error> {
+        // Placeholder implementation
+        Err(std::io::Error::new(std::io::ErrorKind::Other, "Not implemented"))
+    }
+
+    fn encode(&self, _msg: &BaseProposalPart) -> Result<Bytes, Self::Error> {
+        // Placeholder implementation
+        Err(std::io::Error::new(std::io::ErrorKind::Other, "Not implemented"))
+    }
+}
+
+// Add other codec implementations as needed for the consensus engine

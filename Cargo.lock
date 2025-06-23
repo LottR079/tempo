@@ -2532,6 +2532,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "curve25519-dalek-ng"
+version = "4.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1c359b7249347e46fb28804470d071c921156ad62b3eef5d34e2ba867533dec8"
+dependencies = [
+ "byteorder",
+ "digest 0.9.0",
+ "rand_core 0.6.4",
+ "subtle-ng",
+ "zeroize",
+]
+
+[[package]]
 name = "darling"
 version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2616,7 +2629,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8d162beedaa69905488a8da94f5ac3edb4dd4788b732fadb7bd120b2625c1976"
 dependencies = [
  "data-encoding",
- "syn 2.0.102",
+ "syn 1.0.109",
 ]
 
 [[package]]
@@ -2917,6 +2930,21 @@ checksum = "115531babc129696a58c64a4fef0a8bf9e9698629fb97e9e40767d235cfbcd53"
 dependencies = [
  "pkcs8",
  "signature",
+]
+
+[[package]]
+name = "ed25519-consensus"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3c8465edc8ee7436ffea81d21a019b16676ee3db267aa8d5a8d729581ecf998b"
+dependencies = [
+ "curve25519-dalek-ng",
+ "hex",
+ "rand_core 0.6.4",
+ "serde",
+ "sha2 0.9.9",
+ "thiserror 1.0.69",
+ "zeroize",
 ]
 
 [[package]]
@@ -3909,7 +3937,7 @@ dependencies = [
  "js-sys",
  "log",
  "wasm-bindgen",
- "windows-core 0.61.2",
+ "windows-core 0.57.0",
 ]
 
 [[package]]
@@ -4399,6 +4427,7 @@ source = "git+https://github.com/informalsystems/malachite?branch=no-dns#0eece63
 dependencies = [
  "bytes",
  "derive-where",
+ "serde",
  "thiserror 2.0.12",
 ]
 
@@ -4490,6 +4519,16 @@ dependencies = [
  "bs58",
  "multihash",
  "thiserror 2.0.12",
+]
+
+[[package]]
+name = "informalsystems-malachitebft-signing-ed25519"
+version = "0.3.0-pre"
+source = "git+https://github.com/informalsystems/malachite?branch=no-dns#0eece630d7ac07eb2c9127e22e8fc95d47d6fe6a"
+dependencies = [
+ "ed25519-consensus",
+ "informalsystems-malachitebft-core-types",
+ "signature",
 ]
 
 [[package]]
@@ -8428,12 +8467,18 @@ dependencies = [
  "alloy-genesis",
  "alloy-primitives",
  "anyhow",
+ "async-trait",
+ "bincode",
  "bytes",
  "clap",
  "eyre",
  "hex",
+ "informalsystems-malachitebft-app",
  "informalsystems-malachitebft-app-channel",
+ "informalsystems-malachitebft-codec",
  "informalsystems-malachitebft-core-types",
+ "informalsystems-malachitebft-signing-ed25519",
+ "multiaddr",
  "rand 0.9.1",
  "reth",
  "reth-chainspec",
@@ -8461,6 +8506,7 @@ dependencies = [
  "reth-trie-db",
  "serde",
  "serde_json",
+ "sha3",
  "tokio",
  "tracing",
 ]
@@ -10990,6 +11036,12 @@ name = "subtle"
 version = "2.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
+
+[[package]]
+name = "subtle-ng"
+version = "2.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "734676eb262c623cec13c3155096e08d1f8f29adce39ba17948b18dad1e54142"
 
 [[package]]
 name = "syn"
