@@ -1,11 +1,11 @@
 //! Command-line interface for the Reth-Malachite node.
-//! 
+//!
 //! This module provides the CLI interface for running a Reth node with Malachite consensus.
 //! It includes custom chain specification parsing for Malachite chains and integrates with
 //! Reth's existing CLI infrastructure while adding Malachite-specific configuration options.
-//! 
+//!
 //! # Components
-//! 
+//!
 //! - [`Cli`]: Main CLI structure that extends Reth's CLI with Malachite functionality
 //! - [`MalachiteChainSpecParser`]: Custom chain spec parser for Malachite chains
 //! - [`MalachiteArgs`]: Malachite-specific command-line arguments

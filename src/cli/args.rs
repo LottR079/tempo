@@ -1,5 +1,5 @@
 //! Malachite-specific command-line arguments.
-//! 
+//!
 //! This module defines the additional CLI arguments needed for Malachite consensus
 //! configuration, including paths to configuration files, validator keys, and
 //! consensus-specific parameters.
@@ -44,23 +44,25 @@ impl MalachiteArgs {
 
     /// Get the config file path
     pub fn config_file(&self) -> PathBuf {
-        self.consensus_config.clone().unwrap_or_else(|| {
-            self.home_dir().join("config").join("malachite.toml")
-        })
+        self.consensus_config
+            .clone()
+            .unwrap_or_else(|| self.home_dir().join("config").join("malachite.toml"))
     }
 
     /// Get the validator key file path
     pub fn validator_key_file(&self) -> PathBuf {
         self.validator_key.clone().unwrap_or_else(|| {
-            self.home_dir().join("config").join("priv_validator_key.json")
+            self.home_dir()
+                .join("config")
+                .join("priv_validator_key.json")
         })
     }
 
     /// Get the genesis file path
     pub fn genesis_file(&self) -> PathBuf {
-        self.genesis.clone().unwrap_or_else(|| {
-            self.home_dir().join("config").join("genesis.json")
-        })
+        self.genesis
+            .clone()
+            .unwrap_or_else(|| self.home_dir().join("config").join("genesis.json"))
     }
 
     /// Get the node ID, defaulting to "node-0" if not specified
@@ -70,6 +72,8 @@ impl MalachiteArgs {
 
     /// Get the chain ID, defaulting to "reth-malachite-1" if not specified
     pub fn chain_id(&self) -> String {
-        self.chain_id.clone().unwrap_or_else(|| "reth-malachite-1".to_string())
+        self.chain_id
+            .clone()
+            .unwrap_or_else(|| "reth-malachite-1".to_string())
     }
 }
