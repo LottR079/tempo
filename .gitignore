@@ -1,5 +1,5 @@
 target
-
+genesis.json
 # Testnet runtime directories
 testnet/nodes/
 testnet/logs/

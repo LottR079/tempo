@@ -13,8 +13,7 @@
 //! Configuration can be provided via command-line arguments or configuration files.
 
 use clap::Parser;
-use reth::builder::NodeHandle;
-use reth_chainspec::EthChainSpec;
+use reth_node_builder::NodeHandle;
 use std::{fs, sync::Arc};
 use tempo_consensus::{
     app::{Config, Genesis, State, ValidatorInfo, node::RethNode},
