@@ -1,0 +1,73 @@
+name: "Node ops incident"
+description: "Report an incident or operational issue observed while running Tempo nodes."
+title: "[node-ops] <short summary>"
+labels:
+  - A-node-ops
+  - S-needs-triage
+body:
+  - type: input
+    id: network
+    attributes:
+      label: Network / environment
+      description: "Which network or environment is affected?"
+      placeholder: "Andantino testnet, localnet, internal staging, etc."
+    validations:
+      required: true
+  - type: input
+    id: node_version
+    attributes:
+      label: Tempo / binary version
+      description: "Exact node version or git commit you are running."
+      placeholder: "v0.x.y, docker tag, or git commit"
+    validations:
+      required: true
+  - type: textarea
+    id: incident_summary
+    attributes:
+      label: What happened?
+      description: "A short summary of the incident and the observed impact."
+      placeholder: "Blocks stopped finalizing for ~3 minutes; RPC stayed responsive but ..."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce (if known)
+      description: "Describe any steps, traffic patterns, or configuration changes that led up to the issue."
+      placeholder: |
+        1. Started node with ...
+        2. Increased traffic / changed config ...
+        3. Observed ...
+    validations:
+      required: false
+  - type: textarea
+    id: logs_and_metrics
+    attributes:
+      label: Relevant logs and metrics
+      description: "Paste the most relevant logs, metrics snapshots, or dashboards. Please redact sensitive data."
+      placeholder: |
+        - Log excerpts around the time of incident
+        - CPU / memory / disk metrics
+        - Consensus / RPC error rates
+      render: shell
+    validations:
+      required: false
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Node configuration
+      description: "Anything special or non-default about how this node is configured (flags, env vars, infra setup)."
+      placeholder: |
+        - Running inside Kubernetes with ...
+        - Custom DB or networking flags:
+          - ...
+    validations:
+      required: false
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: "Who was affected and how severe was the incident?"
+      placeholder: "Only this node, a validator set, end users, internal systems, etc."
+    validations:
+      required: false
